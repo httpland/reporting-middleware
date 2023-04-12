@@ -76,9 +76,7 @@ function _assert(input: string): void {
 }
 
 function assertNonNegativeInteger(input: number, msg?: string): asserts input {
-  if (!isNonNegativeInteger(input)) {
-    throw Error(msg);
-  }
+  if (!isNonNegativeInteger(input)) throw Error(msg);
 }
 
 /** Serialize {@link EndpointGroup} of array into string.
@@ -95,13 +93,13 @@ function stringifyJSON(input: unknown): string {
   return JSON.stringify(input);
 }
 
-function assertValidEndpointGroup(group: EndpointGroup): asserts group {
+export function assertValidEndpointGroup(group: EndpointGroup): asserts group {
   nonNegativeInteger(group.max_age, "group.max_age");
 
   group.endpoints.forEach(assertValidEndpoint);
 }
 
-function assertValidEndpoint(endpoint: Endpoint): asserts endpoint {
+export function assertValidEndpoint(endpoint: Endpoint): asserts endpoint {
   nonNegativeInteger(endpoint.priority, `endpoint.priority`);
   nonNegativeInteger(endpoint.weight, `endpoint.weight`);
 }
