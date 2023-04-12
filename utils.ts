@@ -27,11 +27,6 @@ export function isURIFormat(input: string): boolean {
   return reURL.test(input);
 }
 
-/** Whether the input is [`<relative-ref>`](https://www.rfc-editor.org/rfc/rfc3986#section-4.2) format or not. */
-export function isRelativeRefFormat(input: string): boolean {
-  return reRelativeRef.test(input);
-}
-
 /** Whether the input [`<URI-reference>`](https://www.rfc-editor.org/rfc/rfc3986#section-4.1) format or not. */
 export function isURIReferenceFormat(input: string): boolean {
   return reURL.test(input) || reRelativeRef.test(input);
