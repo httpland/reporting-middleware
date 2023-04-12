@@ -1,6 +1,12 @@
+// Copyright 2023-latest the httpland authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
 import {
+  ascii,
   Dictionary,
   isArray,
+  isNonNegativeInteger,
+  isNumber,
   Item,
   last,
   Parameters,
@@ -8,6 +14,7 @@ import {
   stringifySfv,
 } from "./deps.ts";
 import { Msg } from "./constants.ts";
+import type { Endpoint, EndpointGroup } from "./types.ts";
 
 /** Generated from `_abnf.ts` */
 const reURL =
@@ -66,4 +73,76 @@ function entry2Dict(
 
 function _assert(input: string): void {
   assertURIReferenceFormat(input, `${Msg.InvalidURIReference} "${input}"`);
+}
+
+function assertNonNegativeInteger(input: number, msg?: string): asserts input {
+  if (!isNonNegativeInteger(input)) {
+    throw Error(msg);
+  }
+}
+
+/** Serialize {@link EndpointGroup} of array into string.
+ *
+ * @throws {Error} If the {@link EndpointGroup} includes invalid field.
+ */
+export function stringifyGroups(groups: readonly EndpointGroup[]): string {
+  groups.forEach(assertValidEndpointGroup);
+
+  return stringifyJsv(groups);
+}
+
+function stringifyJSON(input: unknown): string {
+  return JSON.stringify(input);
+}
+
+function assertValidEndpointGroup(group: EndpointGroup): asserts group {
+  nonNegativeInteger(group.max_age, "group.max_age");
+
+  group.endpoints.forEach(assertValidEndpoint);
+}
+
+function assertValidEndpoint(endpoint: Endpoint): asserts endpoint {
+  nonNegativeInteger(endpoint.priority, `endpoint.priority`);
+  nonNegativeInteger(endpoint.weight, `endpoint.weight`);
+}
+
+function nonNegativeInteger(
+  input: number | undefined,
+  name: string,
+): asserts input {
+  isNumber(input) && assertNonNegativeInteger(
+    input,
+    `${name} must be non-negative integer. ${input}`,
+  );
+}
+
+/** Serialize JSON field value into string. */
+export function stringifyJsv(input: readonly unknown[]): string {
+  /** Specification:
+   * 1. generating the JSON representation,
+   * 2. stripping all JSON control characters (CR, HTAB, LF), or replacing them by space ("SP") characters,
+   * 3. replacing all remaining non-VSPACE characters by the equivalent backslash-escape sequence ([RFC8259], Section 7).
+   *
+   * The resulting list of strings is transformed into an HTTP field value by combining them using comma (%x2C) plus optional SP as delimiter,
+   * and encoding the resulting string into an octet sequence using the US-ASCII character encoding scheme ([RFC0020]).
+   */
+
+  const result = input
+    .map(stringifyJSON)
+    .map(stripControlChar)
+    .map(ascii.escapeNonAsciis)
+    .join(", ");
+
+  return result;
+}
+
+/**
+ * ```abnf
+ * control-characters = CR / HTAB / LF
+ * ```
+ */
+const reControl = /(?:\\t)|(?:\\r)|(?:\\n)/g;
+
+function stripControlChar(input: string): string {
+  return input.replace(reControl, "");
 }

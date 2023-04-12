@@ -7,6 +7,8 @@ export {
 } from "https://deno.land/x/http_middleware@1.0.0/mod.ts";
 export { withHeader } from "https://deno.land/x/http_utils@1.0.0/message.ts";
 export { isArray } from "https://deno.land/x/isx@1.2.0/is_array.ts";
+export { isNumber } from "https://deno.land/x/isx@1.2.0/is_number.ts";
+export { isNonNegativeInteger } from "https://deno.land/x/isx@1.2.0/number/is_non_negative_integer.ts";
 export { last } from "https://deno.land/x/prelude_js@1.2.0/last.ts";
 export {
   Dictionary,
@@ -15,3 +17,4 @@ export {
   String,
   stringifySfv,
 } from "https://deno.land/x/sfv_parser@1.0.1/mod.ts";
+export { default as ascii } from "https://esm.sh/ascii-json@0.2.0?pin=v114";

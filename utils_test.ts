@@ -5,8 +5,10 @@ import {
   isURIFormat,
   isURIReferenceFormat,
   stringifyEndpoints,
+  stringifyJsv,
 } from "./utils.ts";
 import {
+  assert,
   assertEquals,
   assertFalse,
   assertThrows,
@@ -51,5 +53,73 @@ describe("stringifyEndpoints", () => {
 
   table.forEach((input) => {
     assertThrows(() => stringifyEndpoints(input));
+  });
+});
+
+const reVCHAR = /^[\x21-\x7E]*$/;
+
+describe("stringifySfv", () => {
+  it("should only VCHAR", () => {
+    const table: unknown[][] = [
+      ["a"],
+      ["abc"],
+      ["\t"],
+      ["\t\r\n"],
+      ["\x00"],
+      ["\x01"],
+      ["\x02"],
+      ["\x03"],
+      ["あいう"],
+      [{
+        "destination": "Münster",
+        "price": 123,
+        "currency": "€",
+      }],
+    ];
+
+    table.forEach((input) => {
+      assert(reVCHAR.test(stringifyJsv(input)));
+    });
+  });
+  it("should serialize non-ascii escaped string", () => {
+    const table: [unknown[], string][] = [
+      [["a"], `"a"`],
+      [["a"], `"a"`],
+      [["abc"], `"abc"`],
+      [["a\tb"], `"ab"`],
+      [["\u2028"], `"\\u2028"`],
+      [["\u2029"], `"\\u2029"`],
+      [["\f"], `"\\f"`],
+      [["\b"], `"\\b"`],
+      [[`"`], String.raw`"\""`],
+      [["\x5C"], String.raw`"\\"`],
+      [["/"], String.raw`"/"`],
+      [[`"`], `"\\""`],
+      [
+        [{
+          "destination": "Münster",
+          "price": 123,
+          "currency": "€",
+        }],
+        String
+          .raw`{"destination":"M\u00fcnster","price":123,"currency":"\u20ac"}`,
+      ],
+      [
+        ["http://test.test"],
+        `"http://test.test"`,
+      ],
+      [
+        ["http://test.test", "test"],
+        `"http://test.test", "test"`,
+      ],
+      [
+        [{}, {}],
+        `{}, {}`,
+      ],
+    ];
+
+    table.forEach(([input, expected]) => {
+      assertEquals(stringifyJsv(input), expected);
+    });
   });
 });
