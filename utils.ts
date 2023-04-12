@@ -2,7 +2,6 @@
 // This module is browser compatible.
 
 import {
-  ascii,
   Dictionary,
   isArray,
   isNonNegativeInteger,
@@ -11,6 +10,7 @@ import {
   last,
   Parameters,
   String,
+  stringifyJfv,
   stringifySfv,
 } from "./deps.ts";
 import { Msg } from "./constants.ts";
@@ -86,11 +86,7 @@ function assertNonNegativeInteger(input: number, msg?: string): asserts input {
 export function stringifyGroups(groups: readonly EndpointGroup[]): string {
   groups.forEach(assertValidEndpointGroup);
 
-  return stringifyJsv(groups);
-}
-
-function stringifyJSON(input: unknown): string {
-  return JSON.stringify(input);
+  return stringifyJfv(groups);
 }
 
 export function assertValidEndpointGroup(group: EndpointGroup): asserts group {
@@ -112,35 +108,4 @@ function nonNegativeInteger(
     input,
     `${name} must be non-negative integer. ${input}`,
   );
-}
-
-/** Serialize JSON field value into string. */
-export function stringifyJsv(input: readonly unknown[]): string {
-  /** Specification:
-   * 1. generating the JSON representation,
-   * 2. stripping all JSON control characters (CR, HTAB, LF), or replacing them by space ("SP") characters,
-   * 3. replacing all remaining non-VSPACE characters by the equivalent backslash-escape sequence ([RFC8259], Section 7).
-   *
-   * The resulting list of strings is transformed into an HTTP field value by combining them using comma (%x2C) plus optional SP as delimiter,
-   * and encoding the resulting string into an octet sequence using the US-ASCII character encoding scheme ([RFC0020]).
-   */
-
-  const result = input
-    .map(stringifyJSON)
-    .map(stripControlChar)
-    .map(ascii.escapeNonAsciis)
-    .join(", ");
-
-  return result;
-}
-
-/**
- * ```abnf
- * control-characters = CR / HTAB / LF
- * ```
- */
-const reControl = /(?:\\t)|(?:\\r)|(?:\\n)/g;
-
-function stripControlChar(input: string): string {
-  return input.replace(reControl, "");
 }

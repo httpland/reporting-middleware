@@ -17,4 +17,4 @@ export {
   String,
   stringifySfv,
 } from "https://deno.land/x/sfv_parser@1.0.1/mod.ts";
-export { default as ascii } from "https://esm.sh/ascii-json@0.2.0?pin=v114";
+export { stringifyJfv } from "https://deno.land/x/jfv_parser@1.0.0/mod.ts";

@@ -4,7 +4,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   test: false,
   shims: {},
 
-  typeCheck: false,
+  typeCheck: true,
   entryPoints: ["./mod.ts"],
   outDir: "./npm",
   package: {
@@ -69,9 +69,9 @@ export const makeOptions = (version: string): BuildOptions => ({
       name: "@httpland/sfv-parser",
       version: "1.0.1",
     },
-    "https://esm.sh/ascii-json@0.2.0?pin=v114": {
-      name: "ascii-json",
-      version: "0.2.0",
+    "https://deno.land/x/jfv_parser@1.0.0/mod.ts": {
+      name: "@httpland/jfv-parser",
+      version: "1.0.0",
     },
   },
 });
