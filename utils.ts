@@ -13,7 +13,7 @@ import {
   stringifyJfv,
   stringifySfv,
 } from "./deps.ts";
-import { Msg } from "./constants.ts";
+import { Msg, Property } from "./constants.ts";
 import type { Endpoint, EndpointGroup } from "./types.ts";
 
 /** Generated from `_abnf.ts` */
@@ -65,10 +65,7 @@ export function assertURIReferenceFormat(
 function entry2Dict(
   [key, value]: readonly [key: string, value: string],
 ): [string, Item] {
-  return [key, new Item([new String(value), new Parameters()])] as [
-    string,
-    Item,
-  ];
+  return [key, new Item([new String(value), new Parameters()])];
 }
 
 function _assert(input: string): void {
@@ -90,14 +87,20 @@ export function stringifyGroups(groups: readonly EndpointGroup[]): string {
 }
 
 export function assertValidEndpointGroup(group: EndpointGroup): asserts group {
-  nonNegativeInteger(group.max_age, "group.max_age");
+  nonNegativeInteger(group.max_age, `${Property.Group}.${Property.MaxAge}`);
 
   group.endpoints.forEach(assertValidEndpoint);
 }
 
 export function assertValidEndpoint(endpoint: Endpoint): asserts endpoint {
-  nonNegativeInteger(endpoint.priority, `endpoint.priority`);
-  nonNegativeInteger(endpoint.weight, `endpoint.weight`);
+  nonNegativeInteger(
+    endpoint[Property.Priority],
+    `${Property.Endpoint}.${Property.Priority}`,
+  );
+  nonNegativeInteger(
+    endpoint[Property.Weight],
+    `${Property.Endpoint}.${Property.Weight}`,
+  );
 }
 
 function nonNegativeInteger(

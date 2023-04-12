@@ -9,3 +9,12 @@ export const enum ReportingHeader {
 export const enum Msg {
   InvalidURIReference = "invalid <URI-reference> format.",
 }
+
+/** Endpoint property name. */
+export const enum Property {
+  Group = "group",
+  Endpoint = "endpoint",
+  Priority = "priority",
+  MaxAge = "max_age",
+  Weight = "weight",
+}
