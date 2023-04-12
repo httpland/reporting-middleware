@@ -38,7 +38,7 @@ export function isURIReferenceFormat(input: string): boolean {
 }
 
 /** Serialize ordered map into string.
- * @throws {Error} If the input include invalid [`<URI-Reference>`]() format.
+ * @throws {Error} If the input include invalid [`<URI-Reference>`](https://www.rfc-editor.org/rfc/rfc3986#section-4.1) format.
  */
 export function stringifyEndpoints(
   endpoints: Record<string, string> | readonly (readonly [string, string])[],
