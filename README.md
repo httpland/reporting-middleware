@@ -134,7 +134,7 @@ Middleware may make changes to the following elements of the HTTP message.
 
 ## reportTo
 
-Middleware adds the `Reporting-To` header to the response.
+Middleware adds the `Report-To` header to the response.
 
 ```ts
 import {
@@ -154,7 +154,7 @@ const middleware = reportTo([
 ]);
 const response = await middleware(request, handler);
 
-assert(response.headers.has("reporting-to"));
+assert(response.headers.has("report-to"));
 ```
 
 yield:
