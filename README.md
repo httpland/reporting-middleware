@@ -119,6 +119,12 @@ assertThrows(() =>
 );
 ```
 
+### Conditions
+
+Middleware will execute if all of the following conditions are met:
+
+- `Reporting-Endpoints` header does not exist in response
+
 ### Effects
 
 Middleware may make changes to the following elements of the HTTP message.
@@ -126,11 +132,95 @@ Middleware may make changes to the following elements of the HTTP message.
 - HTTP Headers
   - Reporting-Endpoints
 
+## reportTo
+
+Middleware adds the `Report-To` header to the response.
+
+```ts
+import {
+  type Handler,
+  reportTo,
+} from "https://deno.land/x/reporting_middleware@$VERSION/mod.ts";
+import { assert } from "https://deno.land/std/testing/asserts.ts";
+
+declare const request: Request;
+declare const handler: Handler;
+
+const middleware = reportTo([
+  {
+    endpoints: [{ url: "https://test.test/report" }],
+    max_age: 86400,
+  },
+]);
+const response = await middleware(request, handler);
+
+assert(response.headers.has("report-to"));
+```
+
+yield:
+
+```http
+Report-To: {"endpoints",[{"url":"https://test.test/report"}],"max_age":86400}
+```
+
+### Endpoint group
+
+The middleware factory requires an array of endpoint group.
+
+Endpoint group is a structure with the following fields:
+
+| Name               | Type                    | Required | Description                                                                          |
+| ------------------ | ----------------------- | :------: | ------------------------------------------------------------------------------------ |
+| endpoints          | [Endpoint](#endpoint)[] |    ✅    | Endpoint list.                                                                       |
+| max_age            | `number`                |    ✅    | Endpoint group’s lifetime                                                            |
+| group              | `string`                |    -     | Endpoint group name.                                                                 |
+| include_subdomains | `boolean`               |    -     | Whether to enable this endpoint group for all subdomains of the current origin host. |
+
+### Endpoint
+
+Endpoint is following structure:
+
+| Name     | Type     | Required | Description                                                                             |
+| -------- | -------- | :------: | --------------------------------------------------------------------------------------- |
+| url      | `string` |    ✅    | The location of the endpoint.                                                           |
+| priority | `number` |    -     | Number that defines which failover class the endpoint belongs to.                       |
+| weight   | `number` |    -     | Number that defines load balancing for the failover class that the endpoint belongs to. |
+
+### Serialization error
+
+The [endpoint group](#endpoint-group) array is serialized.
+
+If serialization fails, an error may be thrown.
+
+Cases that throw an error are as follows:
+
+- Numeric field is not a non-negative integer
+
+```ts
+import { reportTo } from "https://deno.land/x/reporting_middleware@$VERSION/middleware.ts";
+import { assertThrows } from "https://deno.land/std/testing/asserts.ts";
+
+assertThrows(() => reportTo([{ max_age: NaN, endpoints: [] }]));
+assertThrows(() =>
+  reportTo([{
+    max_age: 0,
+    endpoints: [{ url: "https://test.test/report", priority: 1.2 }],
+  }])
+);
+```
+
 ### Conditions
 
 Middleware will execute if all of the following conditions are met:
 
-- `Reporting-Endpoints` header does not exists in response
+- `Report-To` header does not exist in response
+
+### Effects
+
+Middleware may make changes to the following elements of the HTTP message.
+
+- HTTP Headers
+  - Report-To
 
 ## API
 
