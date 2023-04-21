@@ -2,9 +2,9 @@
 // This module is browser compatible.
 
 import {
+  assertNonNegativeInteger,
   Dictionary,
   isArray,
-  isNonNegativeInteger,
   isNumber,
   Item,
   last,
@@ -65,10 +65,6 @@ function entry2Dict(
 
 function _assert(input: string): void {
   assertURIReferenceFormat(input, `${Msg.InvalidURIReference} "${input}"`);
-}
-
-function assertNonNegativeInteger(input: number, msg?: string): asserts input {
-  if (!isNonNegativeInteger(input)) throw Error(msg);
 }
 
 /** Serialize {@link EndpointGroup} of array into string.
