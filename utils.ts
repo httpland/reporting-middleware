@@ -8,7 +8,6 @@ import {
   isNumber,
   Item,
   last,
-  Parameters,
   String,
   stringifyJfv,
   stringifySfv,
@@ -60,7 +59,7 @@ export function assertURIReferenceFormat(
 function entry2Dict(
   [key, value]: readonly [key: string, value: string],
 ): [string, Item] {
-  return [key, new Item([new String(value), new Parameters()])];
+  return [key, new Item(new String(value))];
 }
 
 function _assert(input: string): void {

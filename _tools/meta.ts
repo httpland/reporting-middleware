@@ -66,9 +66,9 @@ export const makeOptions = (version: string): BuildOptions => ({
       version: "1.2.0",
       subPath: "last.js",
     },
-    "https://deno.land/x/sfv_parser@1.0.1/mod.ts": {
+    "https://deno.land/x/sfv_parser@1.1.0/mod.ts": {
       name: "@httpland/sfv-parser",
-      version: "1.0.1",
+      version: "1.1.0",
     },
     "https://deno.land/x/jfv_parser@1.0.0/mod.ts": {
       name: "@httpland/jfv-parser",
