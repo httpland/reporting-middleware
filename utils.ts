@@ -2,13 +2,12 @@
 // This module is browser compatible.
 
 import {
+  assertNonNegativeInteger,
   Dictionary,
   isArray,
-  isNonNegativeInteger,
   isNumber,
   Item,
   last,
-  Parameters,
   String,
   stringifyJfv,
   stringifySfv,
@@ -60,15 +59,11 @@ export function assertURIReferenceFormat(
 function entry2Dict(
   [key, value]: readonly [key: string, value: string],
 ): [string, Item] {
-  return [key, new Item([new String(value), new Parameters()])];
+  return [key, new Item(new String(value))];
 }
 
 function _assert(input: string): void {
   assertURIReferenceFormat(input, `${Msg.InvalidURIReference} "${input}"`);
-}
-
-function assertNonNegativeInteger(input: number, msg?: string): asserts input {
-  if (!isNonNegativeInteger(input)) throw Error(msg);
 }
 
 /** Serialize {@link EndpointGroup} of array into string.

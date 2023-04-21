@@ -50,11 +50,12 @@ export const makeOptions = (version: string): BuildOptions => ({
       version: "1.2.0",
       subPath: "is_number",
     },
-    "https://deno.land/x/isx@1.2.0/number/is_non_negative_integer.ts": {
-      name: "@miyauci/isx",
-      version: "1.2.0",
-      subPath: "number/is_non_negative_integer",
-    },
+    "https://deno.land/x/assertion@1.0.0/number/assert_non_negative_integer.ts":
+      {
+        name: "@miyauci/assertion",
+        version: "1.0.0",
+        subPath: "number/assert_non_negative_integer.js",
+      },
     "https://deno.land/x/isx@1.2.0/is_array.ts": {
       name: "@miyauci/isx",
       version: "1.2.0",
@@ -65,9 +66,9 @@ export const makeOptions = (version: string): BuildOptions => ({
       version: "1.2.0",
       subPath: "last.js",
     },
-    "https://deno.land/x/sfv_parser@1.0.1/mod.ts": {
+    "https://deno.land/x/sfv_parser@1.1.0/mod.ts": {
       name: "@httpland/sfv-parser",
-      version: "1.0.1",
+      version: "1.1.0",
     },
     "https://deno.land/x/jfv_parser@1.0.0/mod.ts": {
       name: "@httpland/jfv-parser",
